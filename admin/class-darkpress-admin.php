@@ -47,8 +47,6 @@ class Darkpress_Admin
    * @param string $version The version of this plugin.
    * @since    1.0.0
    */
-
-
   public function __construct($plugin_name, $version)
   {
 
@@ -70,7 +68,22 @@ class Darkpress_Admin
 
   public function darkpress_admin_menu_callback()
   {
-    add_options_page('Dark Press Settings', 'DarkPress', 'manage_options', 'darkpress_settings', [$this, 'darkpress_option_page_callback'],);
+    add_menu_page('Dark Press Settings', 'DarkPress', 'manage_options', 'darkpress_settings', [$this, 'darkpress_option_page_callback'],);
+  }
+
+  public function darkpress_plugin_links_callback($links)
+  {
+    $settings_link = '<a href="admin.php?page=darkpress_settings&tab=general_settings">' . __('Settings') . '</a>';
+    array_push($links, $settings_link);
+    return $links;
+  }
+
+  public function darkpress_activated_redirect_callback($plugins)
+  {
+    if ( $plugins == DARKPRESS_BASE_NAME ) {
+      wp_redirect(admin_url('admin.php?page=darkpress_settings&tab=general_settings'));
+      exit();
+    }
   }
 
   public function darkpress_option_page_callback()
@@ -79,36 +92,39 @@ class Darkpress_Admin
     ?>
     <div class="wrap">
       <?php
-      $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'general_settings';
+      $active_tab = isset($_GET[ 'tab' ]) ? $_GET[ 'tab' ] : 'general_settings';
       ?>
 
       <h2 class="nav-tab-wrapper">
-        <a href="?page=darkpress_settings&tab=general_settings" class="nav-tab <?php echo $active_tab == 'general_settings' ? 'nav-tab-active' : ''; ?>">General Settings</a>
-        <a href="?page=darkpress_settings&tab=color_settings" class="nav-tab <?php echo $active_tab == 'color_settings' ? 'nav-tab-active' : ''; ?>">Color Settings</a>
-        <a href="?page=darkpress_settings&tab=other_settings" class="nav-tab <?php echo $active_tab == 'other_settings' ? 'nav-tab-active' : ''; ?>">Other Settings</a>
+        <a href="?page=darkpress_settings&tab=general_settings"
+           class="nav-tab <?php echo $active_tab == 'general_settings' ? 'nav-tab-active' : ''; ?>">General Settings</a>
+        <a href="?page=darkpress_settings&tab=color_settings"
+           class="nav-tab <?php echo $active_tab == 'color_settings' ? 'nav-tab-active' : ''; ?>">Color Settings</a>
+        <a href="?page=darkpress_settings&tab=other_settings"
+           class="nav-tab <?php echo $active_tab == 'other_settings' ? 'nav-tab-active' : ''; ?>">Other Settings</a>
       </h2>
       <form action="options.php" method="post">
         <?php
-
-        if( $active_tab == 'color_settings' ) {
+        if ( $active_tab == 'color_settings' ) {
           settings_fields('darkpress_color_settings');
           do_settings_sections('darkpress_color_settings');
           submit_button();
-        } elseif( $active_tab == 'other_settings' ) {
+        } elseif ( $active_tab == 'other_settings' ) {
           settings_fields('darkpress_other_settings');
           do_settings_sections('darkpress_other_settings');
           submit_button();
-        }else{
+        } else {
           settings_fields('darkpress_general_settings');
           do_settings_sections('darkpress_general_settings');
           submit_button();
         }
-
         ?>
       </form>
     </div>
     <?php
   }
+
+
 }
 
 

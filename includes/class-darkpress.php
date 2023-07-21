@@ -96,12 +96,13 @@ class Darkpress {
 		$plugin_admin = new Darkpress_Admin( $this->get_plugin_name(), $this->get_version() );
 		$plugin_Settings = new Darkpress_Admin_settings( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-    $this->loader->add_action('admin_init', $plugin_Settings, 'darkpress_admin_init_callback');
     $this->loader->add_action('admin_menu', $plugin_admin, 'darkpress_admin_menu_callback');
-
-	}
+    $this->loader->add_action('admin_init', $plugin_Settings, 'darkpress_admin_init_callback');
+    $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
+    $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+    $this->loader->add_action( 'activated_plugin', $plugin_admin, 'darkpress_activated_redirect_callback' );
+    $this->loader->add_action( 'plugin_action_links_'. DARKPRESS_BASE_NAME, $plugin_admin, 'darkpress_plugin_links_callback' );
+  }
 
 	private function define_public_hooks() {
 
